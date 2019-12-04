@@ -9,3 +9,5 @@ sudo useradd -m -s $(which bash) -G sudo ansible
 sudo passwd ansible
 
 # Copy the ~/.ssh/id_rsa.pub content from the control host and to append it to the end of the ~/.ssh/authorized_keys file in the client host
+
+# To be able to run the yum module on the remote host, you should set a default python interpeter. I did this by typing: sudo ln -fs /usr/bin/python3 /usr/bin/python
