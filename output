@@ -1,0 +1,4 @@
+workstation | SUCCESS => {
+    "changed": false,
+    "ping": "pong"
+}
