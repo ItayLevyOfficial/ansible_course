@@ -1,0 +1,34 @@
+---
+- hosts: "web"
+
+  become: "yes"
+
+  tasks:
+
+  - name: Install httpd.
+    yum:
+      name: "httpd"
+      state: "latest"
+
+  - name: Start and enable httpd service.
+    service: 
+      name: "httpd"
+      state: "started"
+      enabled: "yes"
+
+  - name: Retrieve the jenkins login page html.
+    get_url:
+      url: "http://34.89.175.70:8080/login"
+      dest: "/tmp/jenkins_login.html"
+
+  - name: Archive the jenkins login page.
+    archive: 
+      path: "/tmp/jenkins_login.html"
+      format: "zip"
+      remove: "yes"
+
+  - name: Unarchive the jenkins login page and locate it in /var/www/html.
+    unarchive: 
+      remote_src: "yes"
+      src: "/tmp/jenkins_login.html.zip"
+      dest: "/var/www/html"
