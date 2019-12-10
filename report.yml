@@ -9,7 +9,15 @@
         url: "http://apps.l33t.com/transaction_list"
     - debug: 
         msg: "File downloaded"
-
+    - replace: 
+        path: "./transport_list"
+        regexp: "BLANKLINE"
+        replace: "\n"
+          
     rescue:
     - debug:
         msg: "l33t.com appears to be down. Try again later."
+
+    always: 
+    - debug: 
+        msg: "attempt completed."
