@@ -28,4 +28,31 @@
     command: exportfs -a 
     listen: update nfs
     
+- hosts: remote
+  become: yes
+  vars:
+    nfs_ip: "{{ hostvars['nfs']['ansible_default_ipv4']['address'] }}"
+    nfs_hostname: "{{ hostvars['nfs']['ansible_hostname'] }}"
+  vars_files:
+  - userlist.yml
+  tasks: 
 
+  - name: Configure the hosts file.
+    template:
+      src: etc.hosts.j2
+      dest: /etc/hosts.nfslab
+
+  - name: Get the user agreement status.
+    stat:
+      path: /opt/user-agreement.txt
+    register: filestat
+
+  - name: Debug info.
+    debug:
+      var: filestat
+
+  - name: Create users.
+    user:
+      name: "{{ item }}"
+    when: filestat.stat.exists
+    loop: "{{ users }}"
