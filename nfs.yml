@@ -1,0 +1,31 @@
+---
+- hosts: nfs
+  become: yes
+  vars:
+    share_path: /mnt/nfs_root
+  tasks:
+
+  - name: Install nfs-utils.
+    package:
+      name: nfs-utils
+      state: latest
+
+  - name: Start and enable the nfs-server.
+    service:
+      name: nfs-server
+      state: started
+      enabled: yes
+
+  - name: Configure the exports file
+    template:
+      src: exports.j2
+      dest: /etc/exports
+    notify: update nfs
+
+  handlers:
+
+  - name: update nfs exports
+    command: exportfs -a 
+    listen: update nfs
+    
+
