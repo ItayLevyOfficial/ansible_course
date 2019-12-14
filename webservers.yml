@@ -1,0 +1,43 @@
+---
+- hosts: webservers
+  become: yes
+  vars_files:
+  - confidential
+  tasks:
+
+  - name: Install httpd.
+    package:
+      name: httpd
+      state: latest
+
+  - name: Start and enable httpd.
+    service:  
+      name: httpd
+      state: started
+      enabled: yes
+
+  - name: Configure vhost.conf.
+    template:
+      src: vhost.conf.j2
+      dest: /etc/httpd/conf.d/vhost.conf
+
+  - name: Configure htpasswd.
+    template:
+      src: htpasswd.j2
+      dest: /etc/httpd/conf.d/htpasswd
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
