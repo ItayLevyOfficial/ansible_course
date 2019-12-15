@@ -9,35 +9,42 @@
     package:
       name: httpd
       state: latest
+    tags:
+    - base-install
+    notify: httpd service
 
-  - name: Start and enable httpd.
-    service:  
-      name: httpd
-      state: started
-      enabled: yes
 
   - name: Configure vhost.conf.
     template:
       src: vhost.conf.j2
       dest: /etc/httpd/conf.d/vhost.conf
+    tags:
+    - vhost
+    notify: httpd service
 
   - name: Configure htpasswd.
     template:
       src: htpasswd.j2
       dest: /etc/httpd/conf.d/htpasswd
+    tags:
+    - vhost
+    notify: httpd service
 
+  - name: Run the data job.
+    command:
+      cmd: /opt/data-job.sh
+    async: 600
+    poll: 0
+    tags:
+    - data-job
 
+  handlers:
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+  - name: Start and enable httpd.
+    service:  
+      name: httpd
+      state: restarted
+      enabled: yes
+    tags:
+    - base-install
+    listen: httpd service
