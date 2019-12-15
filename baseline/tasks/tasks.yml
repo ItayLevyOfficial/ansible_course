@@ -1,0 +1,35 @@
+---
+- name: Configure motd.
+  template: 
+    src: motd.j2
+    dest: /etc/motd
+
+- name: Install nagios client.
+  package:
+    name: nrpe
+    state: latest
+
+- name: Add nagios server to /etc/hosts.
+  lineinfile:
+    line: "10.0.1.44 nagios.example.com"
+    path: /etc/hosts
+
+- name: Create the noc user.
+  user:
+    name: noc
+
+- name: Validate that /home/noc/.ssh exists.
+  file:
+    path: /home/noc/.ssh
+    state: directory
+    owner: noc
+    group: noc
+    mode: 700
+
+- name: Configure noc authorized_keys.
+  copy: 
+    src: authorized_keys
+    dest: /home/noc/.ssh/authorized_keys
+    mode: 600
+    owner: noc
+    group: noc
